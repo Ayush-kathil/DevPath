@@ -13,6 +13,8 @@
 import sys
 import os
 
+import pytest
+
 # Allow imports from the project root when running tests directly
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
@@ -109,7 +111,7 @@ def test_score_single_project_full_match():
         time_availability="Low"
     )
     # 1 skill match (3) + level (2) + interest (2) + time (1) = 8
-    assert score == 8, f"Expected 8 but got {score}"
+    assert score == pytest.approx(8), f"Expected 8 but got {score}"
 # --------------
 def test_score_single_project_partial_skill_coverage():
     """Matching 1 of 2 required skills should score less than matching both."""
@@ -142,15 +144,15 @@ def test_score_single_project_partial_skill_coverage():
 
 def test_score_coverage_ratio_exact_values():
     """Verify the coverage-weighted formula produces the correct numeric result."""
-    project = {"skills": ["Python", "Flask"], "level": "X", "interest": "X", "time": "X"}
+    project = {"skills": ["Python", "Flask"], "level": "Beginner", "interest": "Data", "time": "Low"}
 
     # 1 of 2 skills matched: coverage = 0.5, score = 1 * 3 * 0.5 = 1.5
-    score = score_single_project(project, ["python"], "X", "X", "X")
-    assert score == 1.5, f"Expected 1.5 but got {score}"
+    score = score_single_project(project, ["python"], "Advanced", "Games", "High")
+    assert score == pytest.approx(1.5), f"Expected 1.5 but got {score}"
 
     # 2 of 2 skills matched: coverage = 1.0, score = 2 * 3 * 1.0 = 6.0
-    score = score_single_project(project, ["python", "flask"], "X", "X", "X")
-    assert score == 6.0, f"Expected 6.0 but got {score}"
+    score = score_single_project(project, ["python", "flask"], "Advanced", "Games", "High")
+    assert score == pytest.approx(6.0), f"Expected 6.0 but got {score}"
 
 
 def test_score_no_project_skills_does_not_crash():
@@ -158,18 +160,18 @@ def test_score_no_project_skills_does_not_crash():
     project = {"skills": [], "level": "Beginner", "interest": "Data", "time": "Low"}
     score = score_single_project(project, ["python"], "Beginner", "Data", "Low")
     # Skill score is 0, but other criteria still score
-    assert score == WEIGHT_LEVEL + WEIGHT_INTEREST + WEIGHT_TIME  # 2+2+1 = 5
+    assert score == pytest.approx(WEIGHT_LEVEL + WEIGHT_INTEREST + WEIGHT_TIME)  # 2+2+1 = 5
 
 
 def test_score_three_skills_partial_coverage():
     """Matching 2 of 3 skills should produce a score between 0-skill and 3-skill matches."""
-    project = {"skills": ["Python", "Flask", "SQL"], "level": "X", "interest": "X", "time": "X"}
+    project = {"skills": ["Python", "Flask", "SQL"], "level": "Beginner", "interest": "Data", "time": "Low"}
 
-    score_0 = score_single_project(project, ["rust"],               "X", "X", "X")
-    score_2 = score_single_project(project, ["python", "flask"],    "X", "X", "X")
-    score_3 = score_single_project(project, ["python", "flask", "sql"], "X", "X", "X")
+    score_0 = score_single_project(project, ["rust"],               "Advanced", "Games", "High")
+    score_2 = score_single_project(project, ["python", "flask"],    "Advanced", "Games", "High")
+    score_3 = score_single_project(project, ["python", "flask", "sql"], "Advanced", "Games", "High")
 
-    assert score_0 == 0
+    assert score_0 == pytest.approx(0)
     assert score_0 < score_2 < score_3, (
         f"Expected 0 < {score_2} < {score_3}"
     )
@@ -191,7 +193,7 @@ def test_score_single_project_no_match():
         interest="Data",
         time_availability="Low"
     )
-    assert score == 0, f"Expected 0 but got {score}"
+    assert score == pytest.approx(0), f"Expected 0 but got {score}"
 
 
 def test_get_recommendations_returns_results():
@@ -347,7 +349,8 @@ def test_download_code_found():
     response = client.get("/project/1/download")
     assert response.status_code == 200
     
-def test_health_check(client):
+def test_health_check():
+    client = get_client()
     response = client.get("/health")
     assert response.status_code == 200
     data = response.get_json()

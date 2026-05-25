@@ -17,6 +17,11 @@ SCORING_WEIGHTS = {
     "time":     1,
 }
 
+WEIGHT_SKILL = SCORING_WEIGHTS["skill"]
+WEIGHT_LEVEL = SCORING_WEIGHTS["level"]
+WEIGHT_INTEREST = SCORING_WEIGHTS["interest"]
+WEIGHT_TIME = SCORING_WEIGHTS["time"]
+
 
 # Common aliases and abbreviations for skills
 # This improves recommendation accuracy by normalizing user input
@@ -76,9 +81,12 @@ def score_single_project(
     # Compare user's skills against the project's required skills
     project_skills = [s.lower() for s in project.get("skills", [])]
     matched_skills = sum(1 for skill in user_skills if skill in project_skills)
+    total_project_skills = len(project_skills)
+    coverage_ratio = matched_skills / total_project_skills if total_project_skills > 0 else 0.0
+
     # Add weighted points based on the number of matching skills.
-    # More overlapping skills result in a higher recommendation score.
-    score += matched_skills * SCORING_WEIGHTS["skill"]
+    # Skill coverage boosts score when more project skills are matched.
+    score += matched_skills * SCORING_WEIGHTS["skill"] * coverage_ratio
 
     # Award points for each additional matching criterion
     if project.get("level", "").lower() == level.lower():
