@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ project.title }} - DevPath Project Details{% endblock %}
+{% block title %}{{ project.title }} - DevPath{% endblock %}
+
+{% block og_title %}{{ project.title }} - DevPath{% endblock %}
+{% block og_desc %}{{ project.description[:150] }}...{% endblock %}
+{% block og_url %}{{ config.get_base_url() }}/project/{{ project.id }}{% endblock %}
+{% block twitter_title %}{{ project.title }} - DevPath{% endblock %}
+{% block twitter_desc %}{{ project.description[:150] }}...{% endblock %}
 
 {% block extra_css %}
 .underline-expand {
@@ -100,7 +106,7 @@
                     <ul class="space-y-4">
                         {% for r_title, r_link in project.resources.items() %}
                         <li>
-                            <a href="{{ r_link }}" target="_blank" class="flex items-center justify-between p-4 bg-surface-container-low rounded-2xl hover:bg-surface-container-high transition-colors group">
+                            <a href="{{ r_link }}" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-4 bg-surface-container-low rounded-2xl hover:bg-surface-container-high transition-colors group">
                                 <span class="font-bold text-primary">{{ r_title }}</span>
                                 <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">open_in_new</span>
                             </a>

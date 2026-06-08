@@ -4,6 +4,21 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>{% block title %}DevPath | Master Your Craft{% endblock %}</title>
+
+    {% block meta_tags %}
+    <meta name="description" content="{{ config.SITE_DESCRIPTION | default('DevPath recommends real coding projects based on your skills, level, and interests — with full roadmaps and starter code.') }}" />
+    <meta property="og:title" content="{% block og_title %}DevPath — Find Projects Based On Your Skills{% endblock %}" />
+    <meta property="og:description" content="{% block og_desc %}{{ config.SITE_DESCRIPTION | default('DevPath recommends real coding projects based on your skills, level, and interests — with full roadmaps and starter code.') }}{% endblock %}" />
+    <meta property="og:image" content="{% block og_image %}{{ config.get_og_image_url() if config.get_og_image_url else 'static/og-banner.png' }}{% endblock %}" />
+    <meta property="og:url" content="{% block og_url %}{{ config.get_base_url() if config.get_base_url else 'https://mydevpath-github.vercel.app' }}/{% endblock %}" />
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}" />
+    <meta property="og:site_name" content="{{ config.SITE_NAME | default('DevPath') }}" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{% block twitter_title %}DevPath — Find Projects Based On Your Skills{% endblock %}" />
+    <meta name="twitter:description" content="{% block twitter_desc %}{{ config.SITE_DESCRIPTION | default('DevPath recommends real coding projects based on your skills, level, and interests — with full roadmaps and starter code.') }}{% endblock %}" />
+    <meta name="twitter:image" content="{% block twitter_image %}{{ config.get_og_image_url() if config.get_og_image_url else 'static/og-banner.png' }}{% endblock %}" />
+    {% endblock %}
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>

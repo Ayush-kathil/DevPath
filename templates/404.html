@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 
+{% block meta_tags %}
+    {{ super() }}
+    <meta name="robots" content="noindex" />
+{% endblock %}
+
 {% block title %}404 - Project Not Found | DevPath{% endblock %}
 
 {% block extra_css %}
